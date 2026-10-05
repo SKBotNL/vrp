@@ -21,7 +21,7 @@ fn can_get_clusters(clusters_fn: fn(&Problem) -> LocationResult) {
         File::open("../examples/data/pragmatic/benches/simple.deliveries.100.json").expect("cannot read problem file"),
     );
 
-    let problem = deserialize_problem(problem_reader).unwrap().read_pragmatic().unwrap();
+    let problem = deserialize_problem(problem_reader).unwrap().read_pragmatic(Environment::default()).unwrap();
     let locations = clusters_fn(&problem).unwrap();
     let clusters = serialize_named_locations_as_geojson(&locations).unwrap();
 

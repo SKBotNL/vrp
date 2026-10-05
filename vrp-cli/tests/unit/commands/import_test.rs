@@ -22,7 +22,7 @@ fn can_import_csv_problem_from_args() {
 
     run_subcommand(matches);
 
-    let problem = BufReader::new(tmpfile.as_file()).read_pragmatic().unwrap();
+    let problem = BufReader::new(tmpfile.as_file()).read_pragmatic(Environment::default()).unwrap();
     assert_eq!(problem.jobs.size(), 3);
     assert_eq!(problem.fleet.vehicles.len(), 30);
 }

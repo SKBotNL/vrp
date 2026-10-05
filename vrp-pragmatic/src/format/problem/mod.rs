@@ -32,11 +32,11 @@ use self::problem_reader::{map_to_problem_with_approx, map_to_problem_with_matri
 /// Reads specific problem definition from various sources.
 pub trait PragmaticProblem {
     /// Reads problem defined in pragmatic format.
-    fn read_pragmatic(self) -> Result<CoreProblem, MultiFormatError>;
+    fn read_pragmatic(self, environment: Environment) -> Result<CoreProblem, MultiFormatError>;
 }
 
 impl<R: Read> PragmaticProblem for (BufReader<R>, Vec<BufReader<R>>) {
-    fn read_pragmatic(self) -> Result<CoreProblem, MultiFormatError> {
+    fn read_pragmatic(self, environment: Environment) -> Result<CoreProblem, MultiFormatError> {
         let problem = deserialize_problem(self.0)?;
 
         let mut matrices = vec![];
@@ -44,20 +44,20 @@ impl<R: Read> PragmaticProblem for (BufReader<R>, Vec<BufReader<R>>) {
             matrices.push(deserialize_matrix(matrix)?);
         }
 
-        map_to_problem_with_matrices(problem, matrices)
+        map_to_problem_with_matrices(problem, matrices, environment)
     }
 }
 
 impl<R: Read> PragmaticProblem for BufReader<R> {
-    fn read_pragmatic(self) -> Result<CoreProblem, MultiFormatError> {
+    fn read_pragmatic(self, environment: Environment) -> Result<CoreProblem, MultiFormatError> {
         let problem = deserialize_problem(self)?;
 
-        map_to_problem_with_approx(problem)
+        map_to_problem_with_approx(problem, environment)
     }
 }
 
 impl PragmaticProblem for (String, Vec<String>) {
-    fn read_pragmatic(self) -> Result<CoreProblem, MultiFormatError> {
+    fn read_pragmatic(self, environment: Environment) -> Result<CoreProblem, MultiFormatError> {
         let problem = deserialize_problem(BufReader::new(self.0.as_bytes()))?;
 
         let mut matrices = vec![];
@@ -65,33 +65,37 @@ impl PragmaticProblem for (String, Vec<String>) {
             matrices.push(deserialize_matrix(BufReader::new(matrix.as_bytes()))?);
         }
 
-        map_to_problem_with_matrices(problem, matrices)
+        map_to_problem_with_matrices(problem, matrices, environment)
     }
 }
 
 impl PragmaticProblem for String {
-    fn read_pragmatic(self) -> Result<CoreProblem, MultiFormatError> {
+    fn read_pragmatic(self, environment: Environment) -> Result<CoreProblem, MultiFormatError> {
         let problem = deserialize_problem(BufReader::new(self.as_bytes()))?;
 
-        map_to_problem_with_approx(problem)
+        map_to_problem_with_approx(problem, environment)
     }
 }
 
 impl PragmaticProblem for (ApiProblem, Vec<Matrix>) {
-    fn read_pragmatic(self) -> Result<CoreProblem, MultiFormatError> {
-        map_to_problem_with_matrices(self.0, self.1)
+    fn read_pragmatic(self, environment: Environment) -> Result<CoreProblem, MultiFormatError> {
+        map_to_problem_with_matrices(self.0, self.1, environment)
     }
 }
 
 impl PragmaticProblem for ApiProblem {
-    fn read_pragmatic(self) -> Result<CoreProblem, MultiFormatError> {
-        map_to_problem_with_approx(self)
+    fn read_pragmatic(self, environment: Environment) -> Result<CoreProblem, MultiFormatError> {
+        map_to_problem_with_approx(self, environment)
     }
 }
 
 impl PragmaticProblem for (ApiProblem, Option<Vec<Matrix>>) {
-    fn read_pragmatic(self) -> Result<CoreProblem, MultiFormatError> {
-        if let Some(matrices) = self.1 { (self.0, matrices).read_pragmatic() } else { self.0.read_pragmatic() }
+    fn read_pragmatic(self, environment: Environment) -> Result<CoreProblem, MultiFormatError> {
+        if let Some(matrices) = self.1 {
+            (self.0, matrices).read_pragmatic(environment)
+        } else {
+            self.0.read_pragmatic(environment)
+        }
     }
 }
 

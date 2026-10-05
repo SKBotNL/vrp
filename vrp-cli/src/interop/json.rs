@@ -14,6 +14,7 @@ use std::io::{BufReader, BufWriter};
 use std::sync::Arc;
 use vrp_core::models::Problem as CoreProblem;
 use vrp_core::prelude::{GenericError, Solver};
+use vrp_core::utils::Environment;
 use vrp_pragmatic::format::problem::{
     Matrix, PragmaticProblem, Problem, deserialize_matrix, deserialize_problem, serialize_problem,
 };
@@ -65,8 +66,11 @@ pub fn solve(problem: &str, matrices: &[String], config: &str) -> InteropResult<
     }
 
     // NOTE: reuse the already parsed values instead of deserializing the raw input a second time
-    let core_problem =
-        if matrices.is_empty() { problem.read_pragmatic() } else { (problem, matrices).read_pragmatic() }?;
+    let core_problem = if matrices.is_empty() {
+        problem.read_pragmatic(Environment::default())
+    } else {
+        (problem, matrices).read_pragmatic(Environment::default())
+    }?;
 
     let config = read_config(BufReader::new(config.as_bytes()))
         .map_err(|err| error("E0004", "cannot read config", format!("check config definition. Error: '{err}'")))?;

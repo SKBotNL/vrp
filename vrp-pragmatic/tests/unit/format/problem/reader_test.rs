@@ -181,7 +181,7 @@ fn can_read_complex_problem() {
         error_codes: None,
     };
 
-    let problem = (problem, vec![matrix]).read_pragmatic().ok().unwrap();
+    let problem = (problem, vec![matrix]).read_pragmatic(Environment::default()).ok().unwrap();
 
     assert_eq!(problem.jobs.all().len(), 3 + 2);
 
@@ -263,7 +263,10 @@ fn can_read_complex_problem() {
 
 #[test]
 fn can_deserialize_minimal_problem_and_matrix() {
-    let problem = (SIMPLE_PROBLEM.to_string(), vec![SIMPLE_MATRIX.to_string()]).read_pragmatic().ok().unwrap();
+    let problem = (SIMPLE_PROBLEM.to_string(), vec![SIMPLE_MATRIX.to_string()])
+        .read_pragmatic(Environment::default())
+        .ok()
+        .unwrap();
 
     assert_eq!(problem.fleet.vehicles.len(), 1);
     assert_eq!(problem.jobs.all().len(), 2);

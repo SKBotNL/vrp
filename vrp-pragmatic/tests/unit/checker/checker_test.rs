@@ -1,3 +1,5 @@
+use vrp_core::utils::Environment;
+
 use super::*;
 use crate::helpers::*;
 
@@ -31,7 +33,7 @@ fn can_remove_duplicates_in_error_list() {
                 .build(),
         )
         .build();
-    let core_problem = Arc::new(problem.clone().read_pragmatic().unwrap());
+    let core_problem = Arc::new(problem.clone().read_pragmatic(Environment::default()).unwrap());
 
     let result = CheckerContext::new(core_problem, problem, None, solution).and_then(|ctx| ctx.check());
 

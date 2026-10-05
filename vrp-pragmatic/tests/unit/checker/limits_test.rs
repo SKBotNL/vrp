@@ -2,6 +2,7 @@ use super::*;
 use crate::format_time;
 use crate::helpers::*;
 use vrp_core::models::examples::create_example_problem;
+use vrp_core::utils::Environment;
 
 fn create_test_problem(limits: Option<VehicleLimits>) -> Problem {
     Problem {
@@ -157,7 +158,7 @@ fn can_check_shift_time() {
                 .build(),
         )
         .build();
-    let core_problem = Arc::new(problem.clone().read_pragmatic().unwrap());
+    let core_problem = Arc::new(problem.clone().read_pragmatic(Environment::default()).unwrap());
     let ctx = CheckerContext::new(core_problem, problem, None, solution).unwrap();
 
     let result = check_shift_time(&ctx);
@@ -217,7 +218,7 @@ fn can_check_recharge_distance() {
                 .build(),
         )
         .build();
-    let core_problem = Arc::new(problem.clone().read_pragmatic().unwrap());
+    let core_problem = Arc::new(problem.clone().read_pragmatic(Environment::default()).unwrap());
     let ctx = CheckerContext::new(core_problem, problem, None, solution).unwrap();
 
     let result = check_recharge_limits(&ctx);

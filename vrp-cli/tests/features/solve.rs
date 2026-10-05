@@ -3,13 +3,14 @@ use std::fs::File;
 use std::io::BufReader;
 use std::sync::Arc;
 use vrp_core::prelude::Solver;
+use vrp_core::utils::Environment;
 use vrp_pragmatic::format::problem::PragmaticProblem;
 
 #[test]
 fn can_solve_problem_using_full_config() {
     let problem = Arc::new(
         BufReader::new(File::open("../examples/data/pragmatic/simple.basic.problem.json").unwrap())
-            .read_pragmatic()
+            .read_pragmatic(Environment::default())
             .unwrap(),
     );
     let reader = BufReader::new(File::open("../examples/data/config/config.full.json").unwrap());

@@ -53,9 +53,9 @@ fn run_examples(base_path: &str) {
                 .map(|path| deserialize_matrix(open_file(format!["{base_path}/{path}.json"].as_str())))
                 .collect::<Result<Vec<Matrix>, _>>()
                 .unwrap_or_else(|errors| panic!("cannot read matrix: {errors}"));
-            ((problem.clone(), matrices.clone()).read_pragmatic(), problem, Some(matrices))
+            ((problem.clone(), matrices.clone()).read_pragmatic(Environment::default()), problem, Some(matrices))
         } else {
-            (problem.clone().read_pragmatic(), problem, None)
+            (problem.clone().read_pragmatic(Environment::default()), problem, None)
         };
 
         let core_problem =

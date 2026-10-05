@@ -1,4 +1,5 @@
 use clap::{Arg, ArgMatches, Command};
+use vrp_core::utils::Environment;
 
 pub mod analyze;
 pub mod check;
@@ -107,5 +108,5 @@ pub(crate) fn get_core_problem<F: Read>(
 
     let matrices = if let Some(matrices) = matrices { Some(matrices?) } else { None };
 
-    (problem, matrices).read_pragmatic()
+    (problem, matrices).read_pragmatic(Environment::default())
 }

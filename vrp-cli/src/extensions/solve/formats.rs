@@ -7,6 +7,7 @@ use std::io::{BufReader, BufWriter, Write};
 use std::sync::Arc;
 use vrp_core::models::{Problem, Solution};
 use vrp_core::prelude::{GenericError, Random};
+use vrp_core::utils::Environment;
 use vrp_pragmatic::format::solution::{PragmaticOutputType, write_pragmatic};
 use vrp_scientific::tsplib::{TsplibProblem, TsplibSolution};
 
@@ -108,9 +109,9 @@ fn add_pragmatic(formats: &mut FormatMap, random: Arc<dyn Random>) {
                 match matrices {
                     Some(matrices) => {
                         let matrices = matrices.into_iter().map(BufReader::new).collect();
-                        (BufReader::new(problem), matrices).read_pragmatic()
+                        (BufReader::new(problem), matrices).read_pragmatic(Environment::default())
                     }
-                    _ => BufReader::new(problem).read_pragmatic(),
+                    _ => BufReader::new(problem).read_pragmatic(Environment::default()),
                 }
                 .map_err(From::from)
             })),

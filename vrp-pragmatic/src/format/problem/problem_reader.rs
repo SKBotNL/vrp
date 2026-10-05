@@ -11,25 +11,30 @@ use vrp_core::models::Extras;
 use vrp_core::models::common::{TimeOffset, TimeSpan, TimeWindow};
 use vrp_core::solver::processing::{ClusterConfigExtraProperty, ReservedTimesExtraProperty};
 
-pub(super) fn map_to_problem_with_approx(problem: ApiProblem) -> Result<CoreProblem, MultiFormatError> {
+pub(super) fn map_to_problem_with_approx(
+    problem: ApiProblem,
+    environment: Environment,
+) -> Result<CoreProblem, MultiFormatError> {
     let coord_index = CoordIndex::new(&problem);
     let matrices =
         if coord_index.has_indices() { vec![] } else { create_approx_matrices_with_index(&problem, &coord_index) };
-    map_to_problem(problem, matrices, coord_index)
+    map_to_problem(problem, matrices, coord_index, environment)
 }
 
 pub(super) fn map_to_problem_with_matrices(
     problem: ApiProblem,
     matrices: Vec<Matrix>,
+    environment: Environment,
 ) -> Result<CoreProblem, MultiFormatError> {
     let coord_index = CoordIndex::new(&problem);
-    map_to_problem(problem, matrices, coord_index)
+    map_to_problem(problem, matrices, coord_index, environment)
 }
 
 pub(super) fn map_to_problem(
     api_problem: ApiProblem,
     matrices: Vec<Matrix>,
     coord_index: CoordIndex,
+    environment: Environment,
 ) -> Result<CoreProblem, MultiFormatError> {
     ValidationContext::new(&api_problem, Some(&matrices), &coord_index).validate()?;
 
@@ -41,7 +46,7 @@ pub(super) fn map_to_problem(
     let mut job_index = JobIndex::default();
 
     let props = get_problem_properties(&api_problem, &matrices);
-    let mut blocks = get_problem_blocks(&api_problem, matrices, coord_index, &mut job_index, &props)?;
+    let mut blocks = get_problem_blocks(&api_problem, matrices, coord_index, &mut job_index, &props, environment)?;
 
     let job_index = Arc::new(job_index);
     extras.set_job_index(job_index.clone());
@@ -179,10 +184,8 @@ fn get_problem_blocks(
     coord_index: Arc<CoordIndex>,
     job_index: &mut JobIndex,
     problem_props: &ProblemProperties,
+    environment: Environment,
 ) -> Result<ProblemBlocks, MultiFormatError> {
-    // TODO pass environment from outside to allow parametrization
-    let environment = Environment::default();
-
     let fleet = read_fleet(api_problem, problem_props, &coord_index)?;
     let reserved_times_index = read_reserved_times_index(api_problem, &fleet);
 

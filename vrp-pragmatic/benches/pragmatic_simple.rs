@@ -22,7 +22,7 @@ fn get_problem(problem_path: &str) -> Arc<Problem> {
         get_bench_resource(problem_path).unwrap_or_else(|err| panic!("cannot open {} file: '{}'", problem_path, err));
     Arc::new(
         BufReader::new(file)
-            .read_pragmatic()
+            .read_pragmatic(Environment::default())
             .unwrap_or_else(|errs| panic!("cannot create pragmatic problem: {}", errs)),
     )
 }

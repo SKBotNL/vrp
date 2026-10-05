@@ -79,8 +79,12 @@ pub fn solve(problem: Problem, matrices: Option<Vec<Matrix>>, generations: usize
 
 fn get_core_problem(problem: Problem, matrices: Option<Vec<Matrix>>) -> Arc<CoreProblem> {
     Arc::new(
-        if let Some(matrices) = matrices { (problem, matrices).read_pragmatic() } else { problem.read_pragmatic() }
-            .unwrap(),
+        if let Some(matrices) = matrices {
+            (problem, matrices).read_pragmatic(Environment::default())
+        } else {
+            problem.read_pragmatic(Environment::default())
+        }
+        .unwrap(),
     )
 }
 

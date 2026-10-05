@@ -1,6 +1,6 @@
 use super::*;
 use crate::helpers::*;
-use vrp_core::models::examples::create_example_problem;
+use vrp_core::{models::examples::create_example_problem, utils::Environment};
 
 parameterized_test! {check_vehicles, (known_ids, tours, expected_result), {
     check_vehicles_impl(known_ids, tours, expected_result);
@@ -212,7 +212,7 @@ fn can_detect_time_window_violation() {
                 .build(),
         )
         .build();
-    let core_problem = Arc::new(problem.clone().read_pragmatic().unwrap());
+    let core_problem = Arc::new(problem.clone().read_pragmatic(Environment::default()).unwrap());
     let ctx = CheckerContext::new(core_problem, problem, None, solution).unwrap();
 
     let result = check_assignment(&ctx);
@@ -252,7 +252,7 @@ fn can_detect_job_duration_violation() {
                 .build(),
         )
         .build();
-    let core_problem = Arc::new(problem.clone().read_pragmatic().unwrap());
+    let core_problem = Arc::new(problem.clone().read_pragmatic(Environment::default()).unwrap());
     let ctx = CheckerContext::new(core_problem, problem, None, solution).unwrap();
 
     let result = check_assignment(&ctx);
@@ -302,7 +302,7 @@ fn can_detect_group_violations() {
             .build()
     };
     let solution = SolutionBuilder::default().tour(create_tour("v1", "job1")).tour(create_tour("v2", "job2")).build();
-    let core_problem = Arc::new(problem.clone().read_pragmatic().unwrap());
+    let core_problem = Arc::new(problem.clone().read_pragmatic(Environment::default()).unwrap());
     let ctx = CheckerContext::new(core_problem, problem, None, solution).unwrap();
 
     let result = check_groups(&ctx);

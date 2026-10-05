@@ -38,7 +38,7 @@ fn can_get_solution_serialized() {
         },
         objectives: None,
     };
-    let problem = Arc::new(problem.read_pragmatic().unwrap());
+    let problem = Arc::new(problem.read_pragmatic(Environment::default()).unwrap());
 
     let solution = get_solution_serialized(problem, Config::default()).unwrap().replace([' ', '\n'], "");
 

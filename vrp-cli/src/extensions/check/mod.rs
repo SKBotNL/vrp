@@ -7,6 +7,7 @@ mod check_test;
 use std::io::{BufReader, Read};
 use std::sync::Arc;
 use vrp_core::prelude::GenericError;
+use vrp_core::utils::Environment;
 use vrp_pragmatic::checker::CheckerContext;
 use vrp_pragmatic::format::problem::{PragmaticProblem, deserialize_matrix, deserialize_problem};
 use vrp_pragmatic::format::solution::deserialize_solution;
@@ -38,7 +39,7 @@ pub fn check_pragmatic_solution<F: Read>(
 
     let core_problem = Arc::new(
         (problem.clone(), matrices.clone())
-            .read_pragmatic()
+            .read_pragmatic(Environment::default())
             .map_err(|errs| vec![format!("cannot read pragmatic problem: '{errs}'").into()])?,
     );
 
