@@ -12,6 +12,7 @@ pub fn delivery_job_prototype(
     skills_proto: impl Strategy<Value = Option<JobSkills>>,
     value_proto: impl Strategy<Value = Option<Float>>,
     group_proto: impl Strategy<Value = Option<String>>,
+    precedence_proto: impl Strategy<Value = Option<JobPrecedence>>,
     compat_proto: impl Strategy<Value = Option<String>>,
 ) -> impl Strategy<Value = Job> {
     job_prototype(
@@ -22,6 +23,7 @@ pub fn delivery_job_prototype(
         skills_proto,
         value_proto,
         group_proto,
+        precedence_proto,
         compat_proto,
     )
 }
@@ -32,6 +34,7 @@ pub fn pickup_job_prototype(
     skills_proto: impl Strategy<Value = Option<JobSkills>>,
     value_proto: impl Strategy<Value = Option<Float>>,
     group_proto: impl Strategy<Value = Option<String>>,
+    precedence_proto: impl Strategy<Value = Option<JobPrecedence>>,
     compat_proto: impl Strategy<Value = Option<String>>,
 ) -> impl Strategy<Value = Job> {
     job_prototype(
@@ -42,6 +45,7 @@ pub fn pickup_job_prototype(
         skills_proto,
         value_proto,
         group_proto,
+        precedence_proto,
         compat_proto,
     )
 }
@@ -56,6 +60,7 @@ prop_compose! {
         skills_proto: impl Strategy<Value = Option<JobSkills>>,
         value_proto: impl Strategy<Value = Option<Float >>,
         group_proto: impl Strategy<Value = Option<String>>,
+        precedence_proto: impl Strategy<Value = Option<JobPrecedence>>,
         compat_proto: impl Strategy<Value = Option<String>>,
     )
     (
@@ -66,6 +71,7 @@ prop_compose! {
      skills in skills_proto,
      value in value_proto,
      group in group_proto,
+     precedence in precedence_proto,
      compatibility in compat_proto,
     ) -> Job {
        Job {
@@ -91,7 +97,8 @@ prop_compose! {
             skills,
             value,
             group,
-            compatibility
+            precedence,
+            compatibility,
         }
     }
 }
@@ -116,6 +123,7 @@ prop_compose! {
         skills_proto: impl Strategy<Value = Option<JobSkills>>,
         value_proto: impl Strategy<Value = Option<Float >>,
         group_proto: impl Strategy<Value = Option<String>>,
+        precedence_proto: impl Strategy<Value = Option<JobPrecedence>>,
         compat_proto: impl Strategy<Value = Option<String>>,
     )
     (
@@ -126,6 +134,7 @@ prop_compose! {
      skills in skills_proto,
      value in value_proto,
      group in group_proto,
+     precedence in precedence_proto,
      compatibility in compat_proto,
     ) -> Job {
         Job {
@@ -137,6 +146,7 @@ prop_compose! {
             skills,
             value,
             group,
+            precedence,
             compatibility,
         }
     }
@@ -226,6 +236,13 @@ prop_compose! {
 prop_compose! {
     /// Generates no job compatibility.
     pub fn generate_no_jobs_compatibility()(_ in ".*") -> Option<String> {
+        None
+    }
+}
+
+prop_compose! {
+    /// Generates no job precedence.
+    pub fn generate_no_jobs_precedence()(_ in ".*") -> Option<JobPrecedence> {
         None
     }
 }

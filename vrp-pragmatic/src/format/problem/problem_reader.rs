@@ -150,6 +150,8 @@ fn get_problem_properties(api_problem: &ApiProblem, matrices: &[Matrix]) -> Prob
         .filter_map(|job_task| job_task.order)
         .any(|order| order > 0);
 
+    let has_precedence = api_problem.plan.jobs.iter().any(|job| job.precedence.is_some());
+
     let has_group = api_problem.plan.jobs.iter().any(|job| job.group.is_some());
     let has_value = api_problem.plan.jobs.iter().filter_map(|job| job.value).any(|value| value != 0.);
     let has_compatibility = api_problem.plan.jobs.iter().any(|job| job.compatibility.is_some());
@@ -170,6 +172,7 @@ fn get_problem_properties(api_problem: &ApiProblem, matrices: &[Matrix]) -> Prob
         has_reloads,
         has_recharges,
         has_order,
+        has_precedence,
         has_group,
         has_value,
         has_compatibility,

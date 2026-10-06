@@ -87,6 +87,16 @@ pub struct JobTask {
     pub order: Option<i32>,
 }
 
+/// Specifies a job precedence.
+#[derive(Clone, Deserialize, Debug, Serialize)]
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
+pub struct JobPrecedence {
+    /// Groups jobs that must follow a shared order.
+    pub scope: String,
+    /// Defines the job's order within the scope.
+    pub order: i32,
+}
+
 /// A customer job model. Actual tasks of the job specified by list of pickups and deliveries
 /// which follows these rules:
 /// * all of them should be completed or none of them.
@@ -124,6 +134,10 @@ pub struct Job {
     /// Job group: jobs of the same group are assigned to the same tour or unassigned.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
+
+    /// Job precedence
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub precedence: Option<JobPrecedence>,
 
     /// A compatibility group: jobs with different compatibility cannot be assigned to the same tour.
     #[serde(skip_serializing_if = "Option::is_none")]

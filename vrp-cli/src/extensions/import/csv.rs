@@ -97,6 +97,7 @@ mod actual {
                 skills: None,
                 value: None,
                 group: None,
+                precedence: None,
                 compatibility: None,
             })
             .collect();

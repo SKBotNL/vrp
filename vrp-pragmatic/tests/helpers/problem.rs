@@ -24,6 +24,7 @@ pub fn create_job(id: &str) -> Job {
         skills: None,
         value: None,
         group: None,
+        precedence: None,
         compatibility: None,
     }
 }

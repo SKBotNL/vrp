@@ -5,6 +5,7 @@ use crate::format::{JobIndex, Location};
 use crate::utils::VariableJobPermutation;
 use std::collections::HashMap;
 use std::sync::Arc;
+use vrp_core::construction::features::JobPrecedenceDimension;
 use vrp_core::{
     construction::features::{
         BreakPolicy, JobCompatibilityDimension, JobDemandDimension, JobGroupDimension, JobSkills as FeatureJobSkills,
@@ -419,6 +420,10 @@ fn fill_dimens(job: &ApiJob, dimens: &mut Dimensions) {
 
     if let Some(group) = job.group.clone() {
         dimens.set_job_group(group);
+    }
+
+    if let Some(precedence) = job.precedence.clone() {
+        dimens.set_job_precedence((precedence.scope, precedence.order));
     }
 
     if let Some(compat) = job.compatibility.clone() {

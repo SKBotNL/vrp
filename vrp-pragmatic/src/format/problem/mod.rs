@@ -108,6 +108,7 @@ struct ProblemProperties {
     has_reloads: bool,
     has_recharges: bool,
     has_order: bool,
+    has_precedence: bool,
     has_group: bool,
     has_value: bool,
     has_compatibility: bool,

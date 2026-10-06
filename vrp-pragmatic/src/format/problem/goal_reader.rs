@@ -46,6 +46,10 @@ pub(super) fn create_goal_context(
         features.push(create_tour_order_hard_feature("tour_order", TOUR_ORDER_CONSTRAINT_CODE, get_tour_order_fn())?)
     }
 
+    if props.has_precedence {
+        features.push(create_precedence_feature("precedence", PRECEDENCE_CONSTRAINT_CODE)?);
+    }
+
     if props.has_compatibility {
         features.push(create_compatibility_feature("compatibility", COMPATIBILITY_CONSTRAINT_CODE)?);
     }
